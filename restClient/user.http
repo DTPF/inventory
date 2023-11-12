@@ -1,0 +1,33 @@
+////////////////////////////////////
+// VS Code Extensión: Rest Client //
+////////////////////////////////////
+
+### Test
+GET http://localhost:4000/api/v1/ping
+
+### Sign up
+POST http://localhost:4000/api/v1/signup
+Content-Type: application/json
+
+{
+  "email": "david@david.com",
+  "password": "1234",
+  "repeat_password": "1234",
+  "firstname": "David",
+  "lastname": "Pizarro",
+  "phone_number": "+34654334435"
+}
+
+### Signin
+POST http://localhost:4000/api/v1/signin
+Content-Type: application/json
+
+{
+  "email": "david@david.com",
+  "password": "1234"
+}
+
+### Get user
+GET http://localhost:4000/api/v1/get-user
+Content-Type: application/xml
+Authorization: 

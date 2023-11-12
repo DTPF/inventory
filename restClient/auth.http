@@ -1,0 +1,19 @@
+////////////////////////////////////
+// VS Code Extensión: Rest Client //
+////////////////////////////////////
+
+### Refresh tokens
+POST http://localhost:4000/api/v1/refresh-tokens
+content-type: application/json
+
+{
+  "refreshToken": ""
+}
+
+### Refresh elder tokens
+POST http://localhost:4000/api/v1/refresh-elder-tokens
+content-type: application/json
+
+{
+  "refreshToken": ""
+}
