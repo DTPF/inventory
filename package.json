@@ -5,7 +5,8 @@
   "main": "src/index.mjs",
   "scripts": {
     "start": "node src/index.mjs",
-    "dev": "NODE_ENV=development nodemon src/index.mjs"
+    "dev": "NODE_ENV=development nodemon src/index.mjs",
+    "start_db": "docker start inventory-mongodb"
   },
   "author": "David T. Pizarro Frick",
   "license": "ISC",
