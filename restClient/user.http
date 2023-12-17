@@ -10,12 +10,15 @@ POST http://localhost:4000/api/v1/signup
 Content-Type: application/json
 
 {
-  "email": "david@david.com",
-  "password": "1234",
-  "repeat_password": "1234",
   "firstname": "David",
   "lastname": "Pizarro",
-  "phone_number": "+34654334435"
+  "email": "davidpizarrofrick@gmail.com",
+  "password": "1234",
+  "repeat_password": "1234",
+  "tel_prefix": "+34",
+  "tel_suffix": "654334456",
+  "birth_date": "1988-02-09T00:00:00.000+00:00",
+  "language": "es"
 }
 
 ### Signin
@@ -23,11 +26,11 @@ POST http://localhost:4000/api/v1/signin
 Content-Type: application/json
 
 {
-  "email": "david@david.com",
+  "email": "davidpizarrofrick@gmail.com",
   "password": "1234"
 }
 
 ### Get user
 GET http://localhost:4000/api/v1/get-user
-Content-Type: application/xml
-Authorization: 
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NzMxODZiZGE1MWMzZDllNGE3MWQ4MiIsInVzZXJfZGF0YSI6eyJmaXJzdG5hbWUiOiJEYXZpZCIsImxhc3RuYW1lIjoiUGl6YXJybyIsImVtYWlsIjoiZGF2aWRwaXphcnJvZnJpY2tAZ21haWwuY29tIn0sImNyZWF0ZVRva2VuIjoxNzAyMDQxOTI0LCJleHAiOjE3MDIxMjgzMjQsImlhdCI6MTcwMjA0MTkyNH0.dSYnshnAyN7lKG77DPibnqNS6OEGAb4PFq7CXfVOP5Q

@@ -32,14 +32,13 @@ export async function refreshTokens(req, res) {
 }
 
 export async function verifyEmail(req, res) {
-  const { token } = req.params;
-
+  const token = req.headers.authorization;
   try {
     const payload = jwt.verify(token, process.env.AUTH_SECRET_KEY);
     try {
       const user = await User.findOneAndUpdate(
-        { email: payload.email },
-        { metadata: { emailVerified: true } }
+        { _id: payload.id },
+        { 'metadata.email_verified': true }
       );
       if (!user) {
         return res.status(404).send({ key: responseKey.userNotFound });
@@ -70,24 +69,22 @@ export async function verifyEmail(req, res) {
 }
 
 export async function resendEmailVerification(req, res) {
-  const { token } = req.params;
+  const token = req.headers.authorization;
   try {
     const payload = jwt.decode(token, process.env.AUTH_SECRET_KEY);
     delete payload.createToken;
     delete payload.exp;
     delete payload.iat;
-
     const newToken = jwtService.createAccessToken(payload, 24, "hours");
     const mailOptions = {
-      from: config.app.EMAIL,
-      to: payload.email,
-      subject: "Verifica tu email en Palmira",
+      from: config.services.EMAIL,
+      to: payload.user_data.email,
+      subject: "Verifica tu email en Dinventary",
       text: `
-        Hola ${payload.name} ${payload.lastname}, Para verificar tu cuenta, haz click en el siguiente enlace: http://localhost:4000/api/v1/verify/${newToken}.\n
+        Hola ${payload.user_data.firstname} ${payload.user_data.lastname}, Para verificar tu cuenta, haz click en el siguiente enlace: http://localhost:4000/api/v1/verify/${newToken}.\n
         Este enlace caducará en 24 horas. Si no has sido tú, ignora este mensaje.
       `,
     };
-
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);

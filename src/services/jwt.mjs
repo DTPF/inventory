@@ -4,7 +4,11 @@ import jwt from "jsonwebtoken";
 export function createAccessToken(user, time, period) {
   const payload = {
     id: user._id,
-    email: user.email,
+    user_data: {
+      firstname: user.user_data.firstname,
+      lastname: user.user_data.lastname,
+      email: user.user_data.email,
+    },
     createToken: moment().unix(),
     exp: moment().add(time, period).unix(),
   };

@@ -8,7 +8,7 @@ import authRoutes from "./router/auth.router.mjs";
 
 const app = express();
 app.use(json());
-app.use(cors());
+app.use(cors( { origin: config.app.CORS_ORIGIN }));
 app.use(helmet());
 
 app.use(`/api/${config.app.API_VERSION}`, userRoutes);

@@ -10,14 +10,14 @@ export async function ping(req, res) {
 }
 
 export async function signUp(req, res) {
-  const { firstname, lastname, email, password, repeat_password, phone_number, birth_date } = req.body;
+  const { firstname, lastname, email, password, repeat_password, tel_prefix, tel_suffix, birth_date, language } = req.body;
 
   if (!firstname) {
     return res.status(400).send({ key: key.nameRequired });
   }
-  if (!lastname) {
-    return res.status(400).send({ key: key.lastnameRequired });
-  }
+  // if (!lastname) {
+  //   return res.status(400).send({ key: key.lastnameRequired });
+  // }
   if (!email) {
     return res.status(400).send({ key: key.emailRequired });
   }
@@ -27,22 +27,25 @@ export async function signUp(req, res) {
   if (!repeat_password) {
     return res.status(400).send({ key: key.rPasswordRequired });
   }
-  if (!phone_number) {
-    return res.status(400).send({ key: key.phoneRequired });
-  }
+  // if (!tel_prefix || !tel_suffix) {
+  //   return res.status(400).send({ key: key.phoneRequired });
+  // }
   if (password.toString() !== repeat_password.toString()) {
     return res.status(400).send({ key: key.passwordsNotMatch });
   }
 
   const newUser = new User({
-    firstname: firstname,
-    lastname: lastname,
-    email: email,
-    password: password,
-    phone_number: phone_number,
-    birth_date: birth_date,
+    user_data: {
+      firstname,
+      lastname,
+      email,
+      password,
+      tel_prefix,
+      tel_suffix,
+      birth_date,
+    },
     settings: {
-      language: "es|ES",
+      language: language ? language : "es",
       notifications: false,
     },
     metadata: {
@@ -59,16 +62,15 @@ export async function signUp(req, res) {
         return res.status(500).send({ key: key.passwordEncryptError });
       }
       try {
-        newUser.password = hash;
+        newUser.user_data.password = hash;
         const userSaved = await newUser.save();
         userSaved.password = undefined;
         userSaved.__v = undefined;
         const token = jwt.createAccessToken(newUser, 24, "hours");
-
         const mailOptions = {
-          from: config.app.EMAIL,
+          from: config.services.EMAIL,
           to: email,
-          subject: "Verifica tu email en D'inventary",
+          subject: "Verifica tu email en Dinventary",
           text: `
           Hola ${firstname} ${lastname}, ¡Gracias por registrarte en D'inventary!\n 
           Para verificar tu cuenta, haz click en el siguiente enlace: http://localhost:4000/api/v1/verify/${token}.\n
@@ -96,20 +98,19 @@ export async function signUp(req, res) {
 
 export async function signIn(req, res) {
   const { email: emailN, password } = req.body;
-  const email = emailN.toLowerCase();
+  const email = emailN?.toLowerCase();
   if (!email) {
     return res.status(400).send({ key: key.emailRequired });
   }
   if (!password) {
     return res.status(400).send({ key: key.passwordRequired });
   }
-
   try {
-    const userStored = await User.findOne({ email });
+    const userStored = await User.findOne({ 'user_data.email': email });
     if (!userStored) {
       return res.status(404).send({ key: key.userNotFound });
     }
-    compare(password, userStored.password, (err, check) => {
+    compare(password, userStored.user_data.password, (err, check) => {
       if (err) {
         return res.status(500).send({ key: key.serverError });
       }
@@ -137,7 +138,7 @@ export async function getUser(req, res) {
     if (!userStored) {
       return res.status(404).send({ key: key.userNotFound });
     }
-    userStored.password = undefined;
+    userStored.user_data.password = undefined;
     return res.status(200).send({ key: key.success, user: userStored });
   } catch (err) {
     return res.status(500).send({ key: key.serverError, err: err });
